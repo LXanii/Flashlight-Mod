@@ -109,39 +109,39 @@ class $modify(LevelSelectLayer) {
 
 class $modify(PlayLayer) {
 
-CCSprite* flashlight;
+CCSprite* m_flashlight;
 
     bool init (GJGameLevel* level, bool first, bool second) {
         bool results = PlayLayer::init(level, first, second);
         int flashlight_opacity = PlayLayer::getCurrentPercentInt() * 2.55;
-	flashlight = CCSprite::create("flashlight.png"_spr);
+	m_fields->m_flashlight = CCSprite::create("flashlight.png"_spr);
         if (toggle) {
-        	flashlight->setOpacity(flashlight_opacity);
-		flashlight->setScale(2);
-        	CCNode* node = reinterpret_cast<CCNode*>(getChildren()->objectAtIndex(1));
+		m_fields->m_flashlight->setOpacity(flashlight_opacity);
+		m_fields->m_flashlight->setScale(2);
+		CCNode* node = reinterpret_cast<CCNode*>(getChildren()->objectAtIndex(1));
 		CCLayer* layer = reinterpret_cast<CCLayer*>(node->getChildren()->objectAtIndex(1));
 		layer->setZOrder(41);
-		layer->addChild(flashlight,1000);
+		layer->addChild(m_fields->m_flashlight,1000);
 		log::info("count: {}", node->getChildren()->count());
         } 
 	return results;
     }
 
     void postUpdate(float first) {
-	    PlayLayer::postUpdate(first);
-	    auto director = CCDirector::sharedDirector();
-	    auto size = director->getWinSize();
-	    int flashlight_opacity = PlayLayer::getCurrentPercentInt() * 2.83;
-	    if (toggle) {
-		    flashlight->setPosition({m_player1->getPositionX() + 31, m_player1->getPositionY() - 10});
-		    if (flashlight_opacity < 253) {
-			    flashlight->setOpacity(flashlight_opacity);
+        PlayLayer::postUpdate(first);
+	auto director = CCDirector::sharedDirector();
+	auto size = director->getWinSize();
+        int flashlight_opacity = PlayLayer::getCurrentPercentInt() * 2.83;
+        if (toggle) {
+		m_fields->m_flashlight->setPosition({m_player1->getPositionX() + 31, m_player1->getPositionY() - 10});
+		if (flashlight_opacity < 253) {
+			m_fields->m_flashlight->setOpacity(flashlight_opacity);
+		}
+		else {
+			if (PlayLayer::getCurrentPercentInt() == 100) {
+				toggle = false;
 			}
-		    else {
-			    if (PlayLayer::getCurrentPercentInt() == 100) {
-				    toggle = false;
-			    }
-		    }
-        } 
+		}
+	} 
     }
 };
