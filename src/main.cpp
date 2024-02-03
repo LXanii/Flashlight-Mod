@@ -3,6 +3,7 @@
 #include <Geode/modify/EditLevelLayer.hpp>
 #include <Geode/modify/LevelInfoLayer.hpp>
 #include <Geode/modify/LevelSelectLayer.hpp>
+#include <Geode/modify/PlayerObject.hpp>
 
 using namespace geode::prelude;
 
@@ -28,7 +29,6 @@ void Flashlight_Btn::flashlight_toggle(CCObject*) {
 
 class $modify(LevelInfoLayer) {
 	bool init(GJGameLevel* level, bool first) {
-		//toggle = false;
 		bool result = LevelInfoLayer::init(level,first); // adds code AFTER execution
 		auto director = CCDirector::sharedDirector();
 		auto size = director->getWinSize(); // -> cuz its a pointer
@@ -55,7 +55,6 @@ class $modify(LevelInfoLayer) {
 
 class $modify(EditLevelLayer) {
 	bool init(GJGameLevel* level) {
-		toggle = false;
 		bool result = EditLevelLayer::init(level); // adds code AFTER execution
 		auto director = CCDirector::sharedDirector();
 		auto size = director->getWinSize(); // -> cuz its a pointer
@@ -82,7 +81,6 @@ class $modify(EditLevelLayer) {
 
 class $modify(LevelSelectLayer) {
 	bool init(int first) {
-		toggle = false;
 		bool result = LevelSelectLayer::init(first); // adds code AFTER execution
 		auto director = CCDirector::sharedDirector();
 		auto size = director->getWinSize(); // -> cuz its a pointer
@@ -109,19 +107,22 @@ class $modify(LevelSelectLayer) {
 
 class $modify(PlayLayer) {
 
-CCSprite* flashlight;
+CCSprite* m_flashlight;
 
     bool init (GJGameLevel* level, bool first, bool second) {
         bool results = PlayLayer::init(level, first, second);
-        int flashlight_opacity = PlayLayer::getCurrentPercentInt() * 2.55;
-		flashlight = CCSprite::create("flashlight.png"_spr);
+		m_fields->m_flashlight = CCSprite::create("flashlight.png"_spr);
+
+		if (m_player1->m_isPlatformer){
+			toggle = false; // checks if its a platformer and if it is to toggle off || will rework later
+		}
         if (toggle) {
-            flashlight->setOpacity(flashlight_opacity);
-			flashlight->setScale(2);
+            m_fields->m_flashlight->setOpacity(0);
+			m_fields->m_flashlight->setScale(2);
             CCNode* node = reinterpret_cast<CCNode*>(getChildren()->objectAtIndex(1));
 			CCLayer* layer = reinterpret_cast<CCLayer*>(node->getChildren()->objectAtIndex(1));
 			layer->setZOrder(41);
-			layer->addChild(flashlight,1000);
+			layer->addChild(m_fields->m_flashlight,1000);
 			log::info("count: {}", node->getChildren()->count());
         } 
 		return results;
@@ -129,19 +130,31 @@ CCSprite* flashlight;
 
     void postUpdate(float first) {
         PlayLayer::postUpdate(first);
+		int flashlight_opacity = 0;
 		auto director = CCDirector::sharedDirector();
 		auto size = director->getWinSize();
-        int flashlight_opacity = PlayLayer::getCurrentPercentInt() * 2.83;
         if (toggle) {
-			flashlight->setPosition({m_player1->getPositionX() + 31, m_player1->getPositionY() - 10});
-			if (flashlight_opacity < 253) {
-				flashlight->setOpacity(flashlight_opacity);
+			m_fields->m_flashlight->setPosition({m_player1->getPositionX() + 31, m_player1->getPositionY() - 10});
+			if (Mod::get()->getSettingValue<bool>("always-dark")) {
+				int flashlight_opacity = PlayLayer::getCurrentPercentInt() * 84.3;
+				if (flashlight_opacity < 253) {
+					m_fields->m_flashlight->setOpacity(flashlight_opacity);
+				}
 			}
 			else {
-				if (PlayLayer::getCurrentPercentInt() == 100) {
-					toggle = false;
+				int flashlight_opacity = PlayLayer::getCurrentPercentInt() * (255 / Mod::get()->getSettingValue<int64_t>("max-percent"));
+				if (flashlight_opacity <= 253) {
+					m_fields->m_flashlight->setOpacity(flashlight_opacity);
 				}
 			}
         } 
     }
 };
+
+// 1.0.1 Change log
+// Fixed bug when resetting level after completion
+// Fixed bug when flashlight was enabled on platformer level
+// Fixed several crashes
+// Added saves to the flashlight toggle after exiting a level
+// Added new settings to mod, "Always Dark" names self explanatory
+// Added setting to change when the darkness gets to max on flashlight, "Max Percent"
