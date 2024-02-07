@@ -1,3 +1,8 @@
+# v1.0.2 Changelog
+
+* Fixed bug with opacity not returning as float (dumb i know)
+* Added "Display Max Percent" self explanatory
+
 # v1.0.1 Changelog
 
  * Fixed bug when resetting level after completion
