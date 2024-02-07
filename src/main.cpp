@@ -166,6 +166,9 @@ CCSprite* m_flashlight;
 				if (flashlight_opacity <= 253) {
 					m_fields->m_flashlight->setOpacity(flashlight_opacity);
 				}
+				else {
+					m_fields->m_flashlight->setOpacity(252);
+				}
 			}
         } 
     }
@@ -174,3 +177,4 @@ CCSprite* m_flashlight;
 // 1.0.2 Change log
 // Fixed bug with opacity not returning as float
 // Added "Display Max %" self explanatory
+// inconsistent final opacity fix yay
