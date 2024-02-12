@@ -1,7 +1,7 @@
 {
 	"geode": "2.0.0-beta.12",
 	"gd": "2.204",
-	"version": "v1.0.2",
+	"version": "v1.0.3",
 	"id": "xanii.flashlight",
 	"name": "Flashlight",
 	"repository": "https://github.com/LXanii/Flashlight-Mod",
@@ -19,11 +19,13 @@
 			"type": "bool",
 			"default": false
 		},
-		"display-max": {
-			"name": "Display Max Percent",
-			"description": "Displays Max Percent in-game.",
-			"type": "bool",
-			"default": false
+		"max-opacity": {
+            "name": "Max Opacity",
+            "description": "Customize the max darkness of the flashlight. (0% - 100%)",
+            "type": "int",
+            "default": 100,
+            "min": 1,
+            "max": 100
 		},
 		"max-percent": {
             "name": "Max Percent",
@@ -32,6 +34,12 @@
             "default": 90,
             "min": 2,
             "max": 100
+		},
+		"display-max": {
+			"name": "Display Max Percent",
+			"description": "Displays Max Percent in-game.",
+			"type": "bool",
+			"default": false
 		}
 	}
 }

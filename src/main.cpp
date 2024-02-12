@@ -162,19 +162,18 @@ CCSprite* m_flashlight;
 				}
 			}
 			else {
-				flashlight_opacity += PlayLayer::getCurrentPercentInt() * (255.0f / Mod::get()->getSettingValue<int64_t>("max-percent"));
-				if (flashlight_opacity <= 253) {
+				flashlight_opacity += PlayLayer::getCurrentPercentInt() * ((2.55f * Mod::get()->getSettingValue<int64_t>("max-opacity")) / Mod::get()->getSettingValue<int64_t>("max-percent"));
+				if (flashlight_opacity <= (2.55 * Mod::get()->getSettingValue<int64_t>("max-opacity")) - 2) {
 					m_fields->m_flashlight->setOpacity(flashlight_opacity);
 				}
-				else {
-					m_fields->m_flashlight->setOpacity(252);
+				else { //
+					m_fields->m_flashlight->setOpacity((2.55 * Mod::get()->getSettingValue<int64_t>("max-opacity")) - 3);
 				}
 			}
         } 
     }
 };
 
-// 1.0.2 Change log
-// Fixed bug with opacity not returning as float
-// Added "Display Max %" self explanatory
-// inconsistent final opacity fix yay
+// 1.0.3 Change log
+// Added Opacity slider
+// Added Android64 & Android32 Support
